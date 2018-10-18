@@ -1,0 +1,8 @@
+README.txt
+template/
+.idea/
+settings.py
+static/
+__pycache__/
+migrations/
+media/
