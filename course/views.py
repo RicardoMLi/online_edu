@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from django.db.models import Q
+from django.http import JsonResponse
 from django.views.generic import View
 from pure_pagination import Paginator,PageNotAnInteger,EmptyPage
 
 from .models import Course,CourseResource,Video
 
 from user_operation.models import UserFav,CourseComment,UserCourse
+from trade.models import Order
 from utils.mixin_utils import LoginRequiredMixin
 
 class CourseListView(View):
@@ -25,6 +27,8 @@ class CourseListView(View):
 				all_courses = all_courses.order_by('-click_num')
 			elif sort == 'students':
 				all_courses = all_courses.order_by('-students_num')
+			elif sort == 'free':
+				all_courses = all_courses.filter(is_free=True)
 			else:
 				pass
 		#分页
@@ -75,6 +79,27 @@ class CourseDetailView(View):
 
 		return render(request,'course/course-detail.html',context)
 
+class CheckCourseView(LoginRequiredMixin,View):
+	"""
+	检测用户是否购买本课程
+	"""
+	def get(self,request):
+		response_data = {}
+		user_id = int(request.GET.get('user_id',''))
+		course_id = int(request.GET.get('course_id',''))
+		#本课程免费
+		if Course.objects.filter(id=course_id,is_free=True):
+			response_data['status'] = 'success'
+		else:
+			record = Order.objects.filter(user_id=user_id,course_id=course_id,pay_status='TRADE_SUCCESS')
+			#用户已购买本课程
+			if record:
+				response_data['status'] = 'success'
+			else:
+				response_data['status'] = 'fail'
+
+		return JsonResponse(response_data) 
+
 class CourseInfoView(LoginRequiredMixin,View):
 
 	def get(self,request,course_id):
@@ -83,11 +108,11 @@ class CourseInfoView(LoginRequiredMixin,View):
 		course = None
 		try:
 			course = Course.objects.get(id=course_id)
-			course.students_num += 1
-			course.save()
 		except Exception as e:
 			return render(request,'404.html',context)
 
+		course.students_num += 1
+		course.save()
 		#若学生第一次学习本课程,则将课程与学生关联
 		user_course = UserCourse.objects.filter(user=request.user,course=course)
 		if not user_course:

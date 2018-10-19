@@ -13,6 +13,8 @@ class Course(models.Model):
 	students_num = models.IntegerField(default=0,verbose_name='学习人数')
 	fav_num = models.IntegerField(default=0,verbose_name='收藏人数')
 	click_num = models.IntegerField(default=0,verbose_name='点击量')
+	is_free = models.BooleanField(default=True,verbose_name='是否免费')
+	price = models.FloatField(default=0,verbose_name='课程价格')
 	category = models.CharField(default='后端开发',max_length=40,verbose_name='课程类别')
 	tag = models.CharField(default='',max_length=20,verbose_name='课程标签')
 	is_banner = models.BooleanField(default=False,verbose_name='首页轮播')
