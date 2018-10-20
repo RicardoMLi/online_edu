@@ -11,6 +11,7 @@ class ShoppingCart(models.Model):
 	class Meta:
 		verbose_name = '购物车'
 		verbose_name_plural = verbose_name
+		unique_together = ('user','course')
 
 	def __str__(self):
 		return '{username}-{course_name}'.format(username=self.user.username,course_name=self.course.name) 
@@ -27,7 +28,6 @@ class Order(models.Model):
 		)
 
 	user = models.ForeignKey(UserProfile,on_delete=models.CASCADE,verbose_name='用户')
-	course = models.ForeignKey(Course,on_delete=models.DO_NOTHING,verbose_name='课程')
 	order_code = models.CharField(max_length=30,unique=True,verbose_name='订单编号')
 	trade_no = models.CharField(max_length=30,unique=True,null=True,blank=True,verbose_name='交易编号')
 	pay_status = models.CharField(max_length=20,choices=ORDER_STATUS,default='unpaid',verbose_name='交易状态')
@@ -41,3 +41,15 @@ class Order(models.Model):
 
 	def __str__(self):
 		return self.order_code
+
+#关联订单与订单内的课程
+class CourseInOrder(models.Model):
+	order = models.ForeignKey(Order,on_delete=models.CASCADE,verbose_name='订单')
+	course = models.ForeignKey(Course,on_delete=models.DO_NOTHING,verbose_name='课程')
+
+	class Meta:
+		verbose_name = '订单课程'
+		verbose_name_plural = verbose_name
+
+	def __str__(self):
+		return self.order.order_code

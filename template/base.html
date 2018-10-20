@@ -45,7 +45,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="#" class="shopping-cart">
+                        <a href="{% url 'order_info' request.user.id %}" class="shopping-cart">
                             <span class="fa fa-shopping-cart fa-2x">&nbsp;</span>
                             <span id="courses-in-cart">购物车</span>  
                         </a>
@@ -81,7 +81,7 @@
                 </div>
             </div>
             
-            
+            {% block nav %}  
             <nav>
                 <div class="nav">
                     <div class="wp">
@@ -100,7 +100,7 @@
                     </div>
                 </div>
             </nav>
-            
+            {% endblock %}
             </div>
     </header>
 </section>
