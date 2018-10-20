@@ -7,7 +7,6 @@ from pure_pagination import Paginator,PageNotAnInteger,EmptyPage
 from .models import Course,CourseResource,Video
 
 from user_operation.models import UserFav,CourseComment,UserCourse
-from trade.models import Order
 from utils.mixin_utils import LoginRequiredMixin
 
 class CourseListView(View):
@@ -78,28 +77,7 @@ class CourseDetailView(View):
 		context['has_fav_org'] = has_fav_org
 
 		return render(request,'course/course-detail.html',context)
-
-class CheckCourseView(LoginRequiredMixin,View):
-	"""
-	检测用户是否购买本课程
-	"""
-	def get(self,request):
-		response_data = {}
-		user_id = int(request.GET.get('user_id',''))
-		course_id = int(request.GET.get('course_id',''))
-		#本课程免费
-		if Course.objects.filter(id=course_id,is_free=True):
-			response_data['status'] = 'success'
-		else:
-			record = Order.objects.filter(user_id=user_id,course_id=course_id,pay_status='TRADE_SUCCESS')
-			#用户已购买本课程
-			if record:
-				response_data['status'] = 'success'
-			else:
-				response_data['status'] = 'fail'
-
-		return JsonResponse(response_data) 
-
+		 
 class CourseInfoView(LoginRequiredMixin,View):
 
 	def get(self,request,course_id):

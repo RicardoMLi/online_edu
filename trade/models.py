@@ -3,6 +3,19 @@ from django.db import models
 from user.models import UserProfile
 from course.models import Course
 
+class ShoppingCart(models.Model):
+	user = models.ForeignKey(UserProfile,on_delete=models.CASCADE,verbose_name='用户')
+	course = models.ForeignKey(Course,on_delete=models.DO_NOTHING,verbose_name='课程')
+	created_time = models.DateTimeField(auto_now_add=True,verbose_name='创建时间')
+
+	class Meta:
+		verbose_name = '购物车'
+		verbose_name_plural = verbose_name
+
+	def __str__(self):
+		return '{username}-{course_name}'.format(username=self.user.username,course_name=self.course.name) 
+
+
 class Order(models.Model):
 
 	ORDER_STATUS = (
@@ -28,14 +41,3 @@ class Order(models.Model):
 
 	def __str__(self):
 		return self.order_code
-
-class OrderCourse(models.Model):
-	order = models.ForeignKey(Order,on_delete=models.CASCADE,verbose_name='订单编号')
-	course = models.ForeignKey(Course,on_delete=models.DO_NOTHING,verbose_name='课程')
-
-	class Meta:
-		verbose_name = '订单课程'
-		verbose_name_plural = verbose_name
-
-	def __str__(self):
-		return self.order.order_code

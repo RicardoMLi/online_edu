@@ -15,9 +15,9 @@ class CourseResourceInline(object):
 	extra = 0
 
 class CourseAdmin(object):
-	list_display = ['name','short_desc','degree','get_chapter_nums','study_duration','students_num','fav_num','click_num','image','created_time']
-	search_fields = ['name','short_desc','degree','study_duration','students_num','fav_num','click_num','image']
-	list_filter = ['name','short_desc','degree','study_duration','students_num','fav_num','click_num','image','created_time']
+	list_display = ['name','short_desc','degree','is_free','get_chapter_nums','study_duration','students_num','fav_num','click_num','image','created_time']
+	search_fields = ['name','short_desc','degree','is_free','study_duration','students_num','fav_num','click_num','image']
+	list_filter = ['name','short_desc','degree','is_free','study_duration','students_num','fav_num','click_num','image','created_time']
 	inlines = [ChapterInline,CourseResourceInline]
 
 	#在保存课程的时候统计课程机构的课程数

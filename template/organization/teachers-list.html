@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}课程讲师 - 慕学在线网{% endblock %}
+{% load staticfiles %}
+{% block custom_bread %}
+    <section>
+        <div class="wp">
+            <ul  class="crumbs">
+                <li><a href="{% url 'index' %}">首页</a>></li>
+                <li>课程讲师</li>
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+
+{% block content %}
+    <section>
+	<div class="wp butler_list_box list">
+	<div class='left'>
+		<div class="butler_list layout">
+			<div class="head">
+				<ul class="fl tab_header">
+					<li {% if sort == '' %}class="active"{% endif %}><a href="?sort=">全部</a> </li>
+					<li {% if sort == 'hot' %}class="active"{% endif %}><a href="?sort=hot">人气 &#8595;</a></li>
+                    <li {% if sort == 'work_years' %}class="active"{% endif %}><a href="?sort=work_years">工作年限 &#8595;</a></li>
+				</ul>
+                <div class="fr butler-num">共<span class="key">9</span>人&nbsp;&nbsp;&nbsp;</div>
+			</div>
+                {% for teacher in teachers.object_list %}
+                <dl class="des">
+					<dt>
+						<a href="{% url 'teacher_detail' teacher.id %}">
+                            <div class="picpic">
+                                <img width="100" height="100" class="scrollLoading" src="/media/{{ teacher.avater }}"/>
+                            </div>
+                        </a>
+					</dt>
+					<dd>
+						<a href="{% url 'teacher_detail' teacher.id %}">
+                            <h1>{{ teacher.name }}<span class="key picbig">金牌讲师</span></h1>
+                        </a>
+						<ul class="cont">
+							<li>工作年限：<span>{{ teacher.work_years }}年</span></li>
+							<li>工作职位：<span>{{ teacher.work_position }}</span></li>
+							<li>就职公司：<span>{{ teacher.work_company }}&nbsp;</span></li>
+							<li>年龄：<span>{{ teacher.age }}岁</span></li>
+							<li>教学特点：<span>{{ teacher.teaching_trait }}</span></li>
+						</ul>
+					</dd>
+                    <a class="buy buyservice" href="{% url 'teacher_detail' teacher.id %}"><br/>查看<br/>详情</a>
+                </dl>
+                {% endfor %}
+
+
+		</div>
+		<div class="pageturn">
+            <ul class="pagelist">
+                {% if teachers.has_previous %}
+                    <li class="long"><a href="?{{ teachers.previous_page_number.querystring }}">上一页</a></li>
+                {% else %}
+                    <li class="long">上一页</li>
+                {% endif %}
+
+                {% for page in teachers.pages %}
+                    {% if page %}
+                        {% ifequal page teachers.number %}
+                            <li class="active"><a href="?{{ page.querystring }}">{{ page }}</a></li>
+                        {% else %}
+                            <li><a href="?{{ page.querystring }}" class="page">{{ page }}</a></li>
+                        {% endifequal %}
+                    {% else %}
+                        <li class="none"><a href="">...</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if teachers.has_next %}
+                    <li class="long"><a href="?{{ teachers.next_page_number.querystring }}">下一页</a></li>
+                {% else %}
+                    <li class="long">下一页</li>
+                {% endif %}
+
+            </ul>
+        </div>
+	</div>
+	<div class="right layout">
+		<div class="head">讲师排行榜</div>
+            {% for hot_teacher in hot_teachers %}
+            <dl class="des">
+                <span class="num fl">1</span>
+                <a href="{% url 'teacher_detail' hot_teacher.id %}">
+                    <dt>
+                        <img width="50" height="50" class="scrollLoading"  src="/media/{{ hot_teacher.avater }}"/>
+                    </dt>
+                </a>
+                <dd>
+                    <a href="{% url 'teacher_detail' hot_teacher.id %}">
+                        <h1 title="{{ hot_teacher.name }}">{{ hot_teacher.name }}</h1>
+                    </a>
+                    <p>工作年限：<span>{{ hot_teacher.work_years }}年</span></p>
+                </dd>
+            </dl>
+            {% endfor %}
+
+	</div>
+    </div>
+</section>
+{% endblock %}
+
