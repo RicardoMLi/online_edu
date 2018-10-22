@@ -381,7 +381,17 @@ class MyCourseView(LoginRequiredMixin,View):
 
 	def get(self,request):
 		context = {}
-		context['user_courses'] = UserCourse.objects.filter(user=request.user)
+		all_courses = UserCourse.objects.filter(user=request.user)
+		#分页
+		try:
+			page = request.GET.get('page',1)
+		except PageNotAnInteger:
+			page = 1
+
+		p = Paginator(all_courses,4,request=request)
+
+		courses = p.page(page)
+		context['user_courses'] = courses
 
 		return render(request,'user/usercenter-mycourse.html',context)
 
