@@ -1,7 +1,10 @@
 README.txt
 .idea/
 settings.py
-static/
+images/
+img/
+css/
+font-awesome/
 __pycache__/
 migrations/
 media/

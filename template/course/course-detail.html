@@ -15,7 +15,6 @@
 </section>
 {% endblock %}
 
-
 {% block content %}
     <section>
 	<div class="wp">
@@ -49,7 +48,7 @@
 							<div class="btn colectgroupbtn"  id="jsLeftBtn">
                                   {% if has_fav_course %}已收藏{% else %}收藏{% endif %}
                             </div>
-                                <div class="buy btn"><a id="jsBuyCourse" style="color: white" href="javascript:void(0)" onclick="study({{ course.id }},{{ request.user.id }})">开始学习</a></div>
+                                <div class="buy btn"><a id="jsBuyCourse" style="color: white" href="javascript:void(0)" onclick="study({{ course.id }},{{ request.user.id }})"></a></div>
 						</div>
 					</div>
                     <div class="group-share-box">
