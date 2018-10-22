@@ -4,6 +4,7 @@ import time
 from datetime import datetime
 from django.shortcuts import render,redirect
 from django.http import JsonResponse
+from django.db.models import Q
 from django.views.generic.base import View
 
 from .models import Order,ShoppingCart,CourseInOrder
@@ -62,6 +63,38 @@ class AddShoppingCartView(View):
 
 		return JsonResponse(response_data)
 
+class DeleteShoppingCartView(LoginRequiredMixin,View):
+	"""
+	删除购物车某件商品
+	"""
+	def post(self,request):
+		user_id = request.POST.get('user_id','')
+		course_id = request.POST.get('course_id','')
+		response_data = {}
+		if course_id == '' or user_id == '':
+			response_data['status'] = 'fail'
+			response_data['msg'] = '用户id或课程id不能为空'
+			return JsonResponse(response_data)
+
+		try:
+			user_id = int(user_id)
+			course_id = int(course_id)
+		except ValueError:
+			response_data['status'] = 'fail'
+			response_data['msg'] = '用户id或课程id错误'
+			return JsonResponse(response_data)
+
+		record = ShoppingCart.objects.filter(user_id=user_id,course_id=course_id)
+		#记录不存在
+		if not record:
+			response_data['status'] = 'fail'
+			response_data['msg'] = '商品不存在购物车内'
+			return JsonResponse(response_data)
+
+		record[0].delete()
+		response_data['status'] = 'success'
+		response_data['msg'] = '删除成功'
+		return JsonResponse(response_data)
 
 class CheckShoppingCartView(LoginRequiredMixin,View):
 	"""
@@ -129,12 +162,21 @@ class OrderInfoView(LoginRequiredMixin,View):
 
 		if not UserProfile.objects.filter(id=user_id).exists():
 			return render(request,'404.html',context)
-
-		carts = ShoppingCart.objects.filter(user_id=user_id)
+		
 		course_list = []
+		#加入购物车内商品
+		carts = ShoppingCart.objects.filter(user_id=user_id)
 		if carts:
 			for cart in carts:
 				course_list.append(cart.course)
+
+		#可能用户有未支付的订单商品
+		unpaidorder_list = Order.objects.filter(Q(user_id=request.user.id)&(~Q(pay_status='TRADE_SUCCESS')))
+		#加入未支付订单内商品
+		if unpaidorder_list:
+			coursesorder_list = [CourseInOrder.objects.get(order_id=order.id) for order in unpaidorder_list]
+			for courseorder in coursesorder_list:
+				course_list.append(courseorder.course)
 
 		context['course_list'] = course_list
 		return render(request,'trade/order.html',context)
@@ -169,6 +211,13 @@ class DealOrderView(LoginRequiredMixin,View):
 		for cart in ShoppingCart.objects.filter(user_id=user_id):
 			order_amount += cart.course.price
 
+		#加入未支付订单内商品
+		unpaidorder_list = Order.objects.filter(Q(user_id=request.user.id)&(~Q(pay_status='TRADE_SUCCESS')))
+		if unpaidorder_list:
+			coursesorder_list = [CourseInOrder.objects.get(order_id=order.id) for order in unpaidorder_list]
+			for courseorder in coursesorder_list:
+				order_amount += courseorder.course.price
+
 		#生成订单编号
 		order_code = '{time_str}{user_id}{rand_int}'.format(time_str=time.strftime('%Y%m%d%H%M%S'),user_id=user.id,rand_int=random.Random().randint(10,99))
 		#生成订单
@@ -185,6 +234,21 @@ class DealOrderView(LoginRequiredMixin,View):
 			orderCourse.course = cart.course
 			orderCourse.save()
 			cart.delete()
+
+		#将未支付订单删除并且将重新关联课程与订单
+		if unpaidorder_list:
+			for unpaidorder in unpaidorder_list:
+				coursesorder_list = [CourseInOrder.objects.get(order_id=order.id) for order in unpaidorder_list]
+				for courseorder in coursesorder_list:
+					#重新关联课程与订单
+					orderCourse =  CourseInOrder()
+					orderCourse.order = order
+					orderCourse.course = courseorder.course
+					orderCourse.save()
+					#之前关联的课程与订单删除
+					courseorder.delete()					
+				#未支付订单删除
+				unpaidorder.delete()
 
 		#生成return_url
 		alipay = AliPay(
@@ -235,7 +299,6 @@ class AlipayView(View):
 			pay_status = processed_dict.get('trade_status') if processed_dict.get('trade_status') else 'TRADE_SUCCESS'
 			
 			existed_orders = Order.objects.filter(order_code=order_code)
-			#将购物车清空
 			
 			if existed_orders:
 				existed_order = existed_orders[0]
@@ -243,11 +306,28 @@ class AlipayView(View):
 				existed_order.trade_no = trade_no
 				existed_order.paid_time = datetime.now()
 				existed_order.save()
-			response = redirect('user_info')
+			response = redirect('myorders')
 		else:
 			response = redirect('index')
 		
 		return response
+
+class OrderDetailView(LoginRequiredMixin,View):
+	"""
+	订单详情
+	"""
+	def get(self,request,order_code):
+		context = {}
+		record = Order.objects.filter(order_code=order_code)
+
+		if not record:
+			return render(request,'404.html',context)
+
+		course_list = [courseorder.course for courseorder in CourseInOrder.objects.filter(order_id=record[0].id)]
+		context['course_list'] = course_list
+
+		return render(request,'trade/order-detail.html',context)
+
 
 
 

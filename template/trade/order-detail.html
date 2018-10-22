@@ -7,24 +7,13 @@
 
 {% block custom_js %}
 	<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
-	<script type="text/javascript">
-	
-	$(document).ready(function(){
-		var total = 0.0;
-		$(".individual_price").each(function(){
-			total += parseFloat($(this).text().split("￥")[1]);
-		});
-		$("#jsTotalPrice").text(total);
-	})
-	
-	</script>
 {% endblock %}
 {% block custom_bread %}
 {% endblock %}
 {% block nav %}  
 {% endblock %}
 {%  block content%}
-	<h1 style="font-size: 2em;margin-left: 240px">确认订单</h1>
+	<h1 style="font-size: 2em;margin-left: 240px">订单详情</h1>
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-8 col-md-offset-2">
@@ -57,8 +46,10 @@
 						                            <li><span class="pram word3">章&nbsp;节&nbsp;数：</span><span>{{ course.get_chapter_nums }}</span></li>
 						                            <li><span class="pram word3">课程类别：</span><span title="">{{ course.category }}</span></li>
 												</ul>
-												<span class="btn btn-danger" onclick="deleteShoppingCart({{ request.user.id }},{{ course.id }})">
-  												<i class="fa fa-trash-o fa-lg"></i>&nbsp;&nbsp;&nbsp;删除</span>
+												<div class="btns">
+						                            <div class="buy btn"><a style="color: white" href="{% url 'course_info' course.id %}">去学习</a>
+						                            </div>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -68,22 +59,6 @@
 								<h1 style="text-align: center;">购物车为空</h1>
 							{% endfor %}
 				    	</div>
-				    </div>
-				    <div class="panel-footer">
-				    	<div class="pay-box">
-				    		<p>
-				    			<span>应付：</span>
-				    			<em>￥</em>
-				    			<span id="jsTotalPrice"></span>
-				    		</p>
-			    		</div>
-			    		<div style="margin-left: 752px;margin-top:10px;font-size: 1.2em">
-			    			<p>购买人:{{ request.user.username }}</p>
-			    		</div>
-			    		<div class="clearfix"></div>
-			    		<div style="margin-left: 750px;margin-top:10px">
-			    			<button class="btn btn-danger" id="jsOrderCommit">提交订单</button>	
-			    		</div>	
 				    </div>
 				</div>
 			</div>

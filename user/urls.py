@@ -1,7 +1,7 @@
 from django.urls import path,include
 from .views import LoginView,LogoutView,RegisterView,ActiveUserView,ForgetPasswordView,ResetView,ModifyPasswordView
 from .views import UserCenterInfoView,UserAvaterUploadView,UpdatePasswordView,SendVerifyCodeView,ModifyEmailView
-from .views import MyCourseView,MyFavOrgView,MyFavTeacherView,MyFavCourse,MyMessageView,SendMobileCodeView,ModifyMobileView
+from .views import MyCourseView,MyFavOrgView,MyFavTeacherView,MyFavCourse,MyMessageView,SendMobileCodeView,ModifyMobileView,MyOrderView
 
 urlpatterns = [
 	path('login/',LoginView.as_view(),name='login'),
@@ -25,6 +25,7 @@ urlpatterns = [
 	path('myfav/teacher/',MyFavTeacherView.as_view(),name='myfav_teacher'),
 	path('myfav/course/',MyFavCourse.as_view(),name='myfav_course'),
 	path('messages/',MyMessageView.as_view(),name='messages'),
+	path('myorders/',MyOrderView.as_view(),name='myorders'),
 	path('send_mobilecode/',SendMobileCodeView.as_view(),name='send_mobilecode'),
 	path('modify_mobile/',ModifyMobileView.as_view(),name='modify_mobile'),
 	

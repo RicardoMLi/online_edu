@@ -1,20 +1,14 @@
 {% extends 'usercenter-base.html' %}
+{% block title %}我的收藏- 慕学在线网{% endblock %}
 {% load staticfiles %}
-{% block title %}我的课程- 慕学在线网{% endblock %}
-{% block custom_css %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
-{% endblock %}
-    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
-{% block custom_js %}
 
-{% endblock %}
 {% block custom_bread %}
     <section>
         <div class="wp">
             <ul  class="crumbs">
                 <li><a href="{% url 'index' %}">首页</a>></li>
                 <li><a href="{% url 'user_info' %}">个人中心</a>></li>
-                <li>我的课程</li>
+                <li>我的订单</li>
             </ul>
         </div>
     </section>
@@ -22,15 +16,16 @@
 
 {% block right_content %}
     <div class="right" >
-		<div class="personal_des Releasecont">
-			<div class="head">
-				<h1>我的订单</h1>
-			</div>
-		</div>
-     <!--    <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-8">
-                    <table class="table table-hover">
+            <div class="personal_des Releasecont">
+                <div class="head">
+                    <h1>我的订单</h1>
+                </div>
+
+            </div>
+            <div class="personal_des permessage">
+                
+                <div class="messagelist">
+                   <table>
                         <tr>
                             <td>订单号</td>
                             <td>下单时间</td>
@@ -43,15 +38,16 @@
                             <td>{{ order.order_code }}</td>
                             <td>{{ order.created_time }}</td>
                             <td>{{ order.order_amount }}</td>
-                            <td>{{ order.pay_status }}</td>
-                            <td>操作</td>
+                            <td>{% if order.pay_status == 'TRADE_SUCCESS' %}已支付{% elif order.pay_status == 'unpaid' %}未支付{% endif %}</td>
+                            <td>{% if order.pay_status == 'unpaid' %}<a href="{% url 'order_info' request.user.id %}">去支付</a>{% elif order.pay_status == 'TRADE_SUCCESS' %}<a href="{% url 'order_detail' order.order_code %}">查看订单<a>{% endif %}</td>
                         </tr>
                         {% empty %}
                         {% endfor %}
                     </table>
                 </div>
             </div>
-        </div> -->
-	</div>
+        </div>
 {% endblock %}
+
+
 

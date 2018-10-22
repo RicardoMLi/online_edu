@@ -22,7 +22,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/muke/course/learn-less.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/aui.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/mooc.css' %}" />
-     <link rel="stylesheet" type="text/css" href="{% static 'css/muke/course/common-less.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/muke/course/common-less.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -116,11 +116,11 @@
                         <div class="course-info-tip">
                             <dl class="first">
                                 <dt>课程须知</dt>
-                                <dd class="autowrap">{{ course.you_need_know }}</dd>
+                                <dd class="autowrap">{{ course.you_need_know|default_if_none:'' }}</dd>
                             </dl>
                             <dl>
                                 <dt>老师告诉你能学到什么？</dt>
-                                <dd class="autowrap">{{ course.you_can_get }}</dd>
+                                <dd class="autowrap">{{ course.you_can_get|default_if_none:'' }}</dd>
                             </dl>
                         </div>
                     </div>

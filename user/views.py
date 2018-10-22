@@ -15,6 +15,7 @@ from .forms import LoginForm,RegisterForm,ForgetPasswordForm,ModifyPasswordForm,
 from Mxonline.settings import REGEX_MOBILE,SMS_CODE_EXPIRES_SECONDS
 from user_operation.models import UserCourse,UserFav,UserMessage
 from course.models import Course
+from trade.models import Order
 from organization.models import CourseOrganization,Teacher
 from utils.email_send import send_email
 from utils.mixin_utils import LoginRequiredMixin
@@ -448,7 +449,26 @@ class MyMessageView(LoginRequiredMixin,View):
 
 		return render(request,'user/usercenter-message.html',context)
 
+class MyOrderView(LoginRequiredMixin,View):
+	"""
+	个人中心我的订单页面
+	"""
+	def get(self,request):
+		context = {}
+		all_orders = Order.objects.filter(user_id=request.user.id)
+		#分页
+		try:
+			page = request.GET.get('page',1)
+		except PageNotAnInteger:
+			page = 1
 
+		p = Paginator(all_orders,5,request=request)
+
+		my_orders = p.page(page)
+
+		context['my_orders'] = my_orders
+
+		return render(request,'user/usercenter-myorders.html',context)
 
 
 

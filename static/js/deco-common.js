@@ -248,7 +248,7 @@ function study(course_id,user_id){
                 }else{
                     alert("您还未支付");
                 }
-            }
+            },
 
         });      
     }else if(type == '加入购物车'){
@@ -259,6 +259,35 @@ function study(course_id,user_id){
     }else{
         alert("元素错误");
     }
+}
+
+//删除购物车商品
+function deleteShoppingCart(user_id,course_id){
+    var csrftoken = getCookie('csrftoken');
+    if(typeof user_id != 'number')
+        return;
+    if(typeof course_id != 'number')
+        return;
+
+    $.ajax({
+        cache:false,
+        url:"/order/delete/",
+        type:"post",
+        data:{'user_id':user_id,'course_id':course_id},
+        async: true,
+        beforeSend:function(xhr, settings){
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        },
+        success:function(data){
+            if(data.status == 'success'){
+                alert(data.msg);
+                window.location.reload();
+            }else{
+                alert(data.msg);
+            }
+        },
+
+        });
 }
 
 //用户提交订单
