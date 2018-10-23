@@ -1,5 +1,6 @@
 from django.db import models
 
+from ckeditor_uploader.fields import RichTextUploadingField
 from organization.models import CourseOrganization,Teacher
 
 class Course(models.Model):
@@ -7,7 +8,7 @@ class Course(models.Model):
 	name = models.CharField(max_length=50,verbose_name='课程名称')
 	teacher = models.ForeignKey(Teacher,null=True,blank=True,on_delete=models.DO_NOTHING,verbose_name='讲师')
 	short_desc = models.CharField(max_length=300,verbose_name='课程简述')
-	detail_desc = models.TextField(verbose_name='课程描述')
+	detail_desc = RichTextUploadingField(verbose_name='课程描述')
 	degree = models.CharField(choices=(('primary','初级'),('junior','中级'),('senior','高级')),max_length=10,verbose_name='难易程度')
 	study_duration = models.IntegerField(default=0,verbose_name='学习时长')
 	students_num = models.IntegerField(default=0,verbose_name='学习人数')

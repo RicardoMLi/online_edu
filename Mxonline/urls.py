@@ -24,6 +24,7 @@ from .views import IndexView
 urlpatterns = [
     path('',IndexView.as_view(),name='index'),
     path('xadmin/', xadmin.site.urls),
+    path('ckeditor',include('ckeditor_uploader.urls')),
     path('user/',include('user.urls')),
     path('organization/',include('organization.urls')),
     path('user_operation/',include('user_operation.urls')),

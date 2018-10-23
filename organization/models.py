@@ -1,5 +1,6 @@
 from django.db import models
 
+from ckeditor_uploader.fields import RichTextUploadingField
 
 #城市model
 class CityDict(models.Model):
@@ -19,7 +20,7 @@ class CityDict(models.Model):
 class CourseOrganization(models.Model):
 	name = models.CharField(max_length=50,verbose_name='机构名称')
 	category = models.CharField(max_length=20,choices=(('organization','培训机构'),('college','大学'),('personal','个人')),default='organization',verbose_name='机构类别')
-	desc = models.TextField(verbose_name='机构描述')
+	desc = RichTextUploadingField(verbose_name='机构描述')
 	tag = models.CharField(default='全国知名',max_length=20,verbose_name='机构标签')
 	slogan = models.CharField(max_length=100,default='你旺,我旺,大家旺',verbose_name='标语')
 	click_num = models.IntegerField(default=0,verbose_name='点击量')
