@@ -2,10 +2,12 @@ from django.shortcuts import render
 from django.db.models import Q
 from django.http import JsonResponse
 from django.views.generic import View
+from django.core.cache import cache
 from pure_pagination import Paginator,PageNotAnInteger,EmptyPage
 
 from .models import Course,CourseResource,Video
 
+from Mxonline.settings import MAX_CACHE_TIME
 from user_operation.models import UserFav,CourseComment,UserCourse
 from utils.mixin_utils import LoginRequiredMixin
 
@@ -41,6 +43,11 @@ class CourseListView(View):
 		courses = p.page(page)
 		context['sort'] = sort
 		context['all_courses'] = courses
+		hot_courses = cache.get('hot_courses')
+		if hot_courses is None:
+			hot_courses = all_courses.order_by('-click_num')[:3]
+			cache.set('hot_courses',hot_courses,MAX_CACHE_TIME)
+
 		context['hot_courses'] = all_courses.order_by('-click_num')[:3]
 
 		return render(request,'course/course-list.html',context)

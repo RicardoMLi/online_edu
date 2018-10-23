@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.db.models import Q
+from django.core.cache import cache
 from django.views.generic import View
 from pure_pagination import Paginator,EmptyPage,PageNotAnInteger
 
 from .models import CourseOrganization,CityDict,Teacher
 
+from Mxonline.settings import MAX_CACHE_TIME
 from course.models import Course
 from user_operation.models import UserFav
 
@@ -14,8 +16,15 @@ class OrganizationListView(View):
 	def get(self,request):
 		context = {}
 		all_orgs = CourseOrganization.objects.all()
-		all_cities = CityDict.objects.all()
-		hot_orgs = CourseOrganization.objects.order_by('-click_num')[:4]
+		hot_orgs = cache.get('hot_orgs')
+		if hot_orgs is None:
+			hot_orgs = CourseOrganization.objects.order_by('-click_num')[:4]
+			cache.set('hot_orgs',hot_orgs,MAX_CACHE_TIME)
+
+		all_cities = cache.get('all_cities')
+		if all_cities is None:
+			all_cities = CityDict.objects.all()
+			cache.set('all_cities',all_cities,MAX_CACHE_TIME)
 
 		#搜索课程机构
 		keywords = request.GET.get('keywords','')
@@ -177,8 +186,10 @@ class TeacherListView(View):
 	def get(self,request):
 		context = {}
 		all_teachers = Teacher.objects.all()
-		hot_teachers = all_teachers.order_by('-click_num')[:5]
-
+		hot_teachers = cache.get('hot_teachers')
+		if hot_teachers is None:
+			hot_teachers = all_teachers.order_by('-click_num')[:5]
+			cache.set('hot_teachers',hot_teachers,MAX_CACHE_TIME)
 
 		#搜索讲师
 		keywords = request.GET.get('keywords','')
