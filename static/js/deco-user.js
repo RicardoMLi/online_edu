@@ -33,6 +33,35 @@ function sendCodeChangeEmail($btn){
     });
 
 }
+
+
+//第三方登录用户修改邮箱
+// function changeEmailSubmit2($btn){
+//     var email = $("#jsChangeEmail").val();
+//     var csrftoken = getCookie('csrftoken');
+//     $.ajax({
+//         cache: false,
+//         type: 'POST',
+//         url:"/user/modify_email_third/",
+//         data:{"email":email},
+//         async: true,
+//         beforeSend:function(xhr,settings){
+//             xhr.setRequestHeader("X-CSRFToken", csrftoken);
+//             $btn.val("激活码发送中...");
+//             $btn.attr('disabled',true);
+//         },
+//         success: function(data) {
+//             if(data.status == "success"){
+//                 $("#jsChangeEmailDialog").hide();
+//                 alert("激活码已发送至您的邮箱,请注意查收");
+//                 window.location.href = '/user/login/';
+//             }else if(data.status == "fail"){
+//                  Dml.fun.showValidateError($('#jsChangeEmail'), data.msg);
+//             }
+//         },
+//     });
+// }
+
 //个人资料邮箱修改
 function changeEmailSubmit($btn){
 var verify = verifyDialogSubmit(
@@ -226,9 +255,8 @@ $(function(){
         $('#jsAvatarForm').submit();
     }});
 
-
-    $('.changeemai_btn').click(function(){
-        Dml.fun.showDialog('#jsChangeEmailDialog', '#jsChangePhoneTips' ,'jsChangeEmailTips');
+    $('#jsChangeEmailButton').click(function(){
+        Dml.fun.showDialog('#jsChangeEmailDialog', '#jsChangePhoneTips' ,'jsChangeEmailTips');    
     });
     $('.changephone_btn').click(function(){
         Dml.fun.showDialog('#jsChangePhoneDialog','#jsChangePhoneTips')
@@ -237,7 +265,7 @@ $(function(){
         sendCodeChangeEmail($(this));
     });
     $('#jsChangeEmailBtn').on('click', function(){
-        changeEmailSubmit($(this));
+        changeEmailSubmit($(this));    
     });
     $('#jsChangePhoneCodeBtn').on('click', function(){
         sendCodeChangePhone($(this));

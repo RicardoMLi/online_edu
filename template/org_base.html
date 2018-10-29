@@ -23,8 +23,6 @@
                 <div class="top">
                 <div class="wp">
                     <div class="fl"><p>服务电话：<b>13537144941</b></p></div>
-                    <!--登录后跳转-->
-
                     {% if request.user.is_authenticated %}
                         <div class="personal">
                             <dl class="user fr">
@@ -50,7 +48,7 @@
                         </a>
                     {% else %}
                         <a style="color:white" class="fr registerbtn" href="{% url 'register' %}">注册</a>
-                        <a style="color:white" class="fr loginbtn" href="{% url 'login' %}?from={{ request.get_full_path }}">登录</a>
+                        <a style="color:white" class="fr loginbtn" href="{% url 'login' %}">登录</a>
                     {% endif %}
 
                 </div>

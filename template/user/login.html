@@ -81,7 +81,6 @@
                     <div class="error btns login-form-tips" id="jsLoginTips">{{ login_form.errors.password.as_text }}</div>
                     <div class="error btns login-form-tips" id="jsLoginTips">{{ login_form.non_field_errors }}</div>
                     <div class="auto-box marb38">
-                        <label><input type="checkbox" id="jsAutoLogin"> 自动登录</label>
                         <a class="fr" href="{% url 'forgetpassword' %}">忘记密码？</a>
                     </div>
                     <input class="btn btn-green" id="jsLoginBtn" type="submit" value="立即登录 > " />

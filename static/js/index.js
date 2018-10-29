@@ -1,5 +1,12 @@
 $(function() {
 	/*index*/
+
+	if($("#jsUnactiveForm input").val() == "False"){
+		alert("haha");
+		Dml.fun.showDialog("#jsUnactiveForm");
+	}
+
+
 	$('.module3 .company').hover(function(){
 		$(this).find('.score').stop(true,true).fadeToggle(200);
 	});

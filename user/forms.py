@@ -19,13 +19,13 @@ class LoginForm(forms.Form):
 
 		user = authenticate(username=username,password=password)
 
+		if user is None:
+			raise forms.ValidationError('账号或者密码错误')
+
 		if not user.is_active:
 			raise forms.ValidationError('用户账号未激活')
 
-		if user is None:
-			raise forms.ValidationError('账号或者密码错误')
-		else:
-			self.cleaned_data['user'] = user
+		self.cleaned_data['user'] = user
 
 		return self.cleaned_data
 
@@ -41,6 +41,19 @@ class RegisterForm(forms.Form):
 			raise forms.ValidationError('此邮箱已被注册')
 
 		return email
+
+	def clean_password_again(self):
+		password = self.cleaned_data.get('password','')
+		password_again = self.cleaned_data.get('password_again','')
+
+		if password_again != password:
+			raise forms.ValidationError('两次输入的密码不一致')
+
+		return password_again
+
+class ThirdRegisterForm(forms.Form):
+	password = forms.CharField(required=True,min_length=6,error_messages={'required':'密码不能为空'})
+	password_again = forms.CharField(required=True,min_length=6,error_messages={'required':'密码不能为空'})
 
 	def clean_password_again(self):
 		password = self.cleaned_data.get('password','')

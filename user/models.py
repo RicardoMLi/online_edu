@@ -8,6 +8,8 @@ class UserProfile(AbstractUser):
 	birthday = models.DateField(null=True,blank=True,verbose_name='生日')
 	mobile = models.CharField(max_length=11,null=True,blank=True,verbose_name='电话')
 	address = models.CharField(max_length=100,default='',null=True,blank=True,verbose_name='地址')
+	#默认False,在激活账号后改为True,以此区分第三方登录创建账号和邮箱创建账号
+	not_third = models.BooleanField(default=False,verbose_name='不是第三方登录创建')
 	avater = models.ImageField(upload_to='images/%Y/%m',default='image/default.png',null=True,blank=True,max_length=100)
 
 	#获取用户未读消息数量

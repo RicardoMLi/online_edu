@@ -11,7 +11,7 @@ from django.views.generic.base import View
 from pure_pagination import PageNotAnInteger,Paginator,EmptyPage
 
 from .models import UserProfile,EmailVerifyRecord,MobileVerifyRecord
-from .forms import LoginForm,RegisterForm,ForgetPasswordForm,ModifyPasswordForm,ModifyUserAvaterForm,UserInfoForm
+from .forms import LoginForm,RegisterForm,ThirdRegisterForm,ForgetPasswordForm,ModifyPasswordForm,ModifyUserAvaterForm,UserInfoForm
 from Mxonline.settings import REGEX_MOBILE,SMS_CODE_EXPIRES_SECONDS
 from user_operation.models import UserCourse,UserFav,UserMessage
 from course.models import Course
@@ -45,7 +45,7 @@ class LoginView(View):
 		if login_form.is_valid():
 			user = login_form.cleaned_data['user']
 			login(request,user)
-			return redirect(request.GET.get('from',reverse('index')))
+			return redirect('index')
 		else:
 			context['login_form'] = login_form
 			return render(request,'user/login.html',context)
@@ -66,6 +66,8 @@ class ActiveUserView(View):
 				email = record.email
 				user = UserProfile.objects.get(email=email)
 				user.is_active = True
+				#区别第三方登录创建的账号
+				user.not_third = True
 				user.save()
 				#删除注册账号时发生的验证码记录
 				for record in EmailVerifyRecord.objects.filter(email=email,send_type='register'):
@@ -101,18 +103,49 @@ class RegisterView(View):
 				message.message = "欢迎注册慕学在线网,希望您学习愉快。"
 				message.has_read = False
 				message.save()
-				#用户登录
-				login(request,user)
 				return redirect('login')
 			elif return_msg == '邮箱地址错误':
 				context['title'] = '邮箱地址错误'
 				return render(request,'user/send_response.html',context)
-			else:
+			elif return_msg == '网络连接失败':
 				context['title'] = '网络连接失败'
+				return render(request,'user/send_response.html',context)
+			else:
+				context['title'] = '服务器错误'
 				return render(request,'user/send_response.html',context)
 		else:
 			context['register_form'] = register_form
 			return render(request,'user/register.html',context)
+
+class ThirdRegisterView(View):
+	"""
+	第三方用户注册
+	"""
+	def get(self,request):
+		context = {}
+		context['username'] = request.user.username
+
+		return render(request,'user/third_register.html',context)
+
+	def post(self,request):
+		context = {}
+		third_register_form = ThirdRegisterForm(request.POST)
+		if third_register_form.is_valid():
+			user = request.user
+			password = third_register_form.cleaned_data['password']
+			user.set_password(password)
+			user.save()
+			#发送欢迎消息
+			message = UserMessage()
+			message.user = user.id
+			message.message = "欢迎注册慕学在线网,希望您学习愉快。"
+			message.has_read = False
+			message.save()
+			login(request,user,backend='user.views.CustomBackend')
+			return redirect('index')
+		else:
+			context['third_register_form'] = third_register_form
+			return render(request,'user/third_register.html',context)
 
 class ForgetPasswordView(View):
 
@@ -134,8 +167,11 @@ class ForgetPasswordView(View):
 			elif return_msg == '邮箱地址错误':
 				context['title'] = '邮箱地址错误,请检查您的邮箱是否输入错误'
 				return render(request,'user/send_response.html',context)
+			elif return_msg == '网络连接失败':
+				context['title'] = '网络连接失败'
+				return render(request,'user/send_response.html',context)
 			else:
-				context['title'] = '网络连接失败，请检查您的网络连接'
+				context['title'] = '服务器发生错误'
 				return render(request,'user/send_response.html',context)
 		else:
 			context['forget_form'] = forget_form
@@ -180,7 +216,7 @@ class UserCenterInfoView(LoginRequiredMixin,View):
 	def get(self,request):
 		context = {}
 		context['user'] = request.user
-
+		print(request.user.check_password(''))
 		return render(request,'user/usercenter-info.html',context)
 
 	def post(self,request):
@@ -253,16 +289,19 @@ class SendVerifyCodeView(View):
 		elif return_msg == '邮箱地址错误':
 			response_data['status'] = 'fail'
 			response_data['msg'] = '邮箱地址错误'
-		else:
+		elif return_msg == '网络连接失败':
 			response_data['status'] = 'fail'
 			response_data['msg'] = '网络连接失败'
+		else:
+			response_data['status'] = 'fail'
+			response_data['msg'] = '服务器发生错误'
 
 		return JsonResponse(response_data)
 
 class ModifyEmailView(LoginRequiredMixin,View):
 	"""
 	在个人中心修改邮箱
-	"""
+	"""		
 	def post(self,request):
 		email = request.POST.get('email','')
 		code = request.POST.get('code','')
@@ -294,6 +333,65 @@ class ModifyEmailView(LoginRequiredMixin,View):
 
 		return JsonResponse(response_data)
 
+"""
+def user_password(strategy, user, is_new=False, *args, **kwargs):
+    if strategy.backend.name != 'username':
+        return
+
+    password = strategy.request_data()['password']
+    if is_new:
+        user.set_password(password)
+        user.save()
+    elif not user.validate_password(password):
+        # return {'user': None, 'social': None}
+        raise AuthException(strategy.backend)
+
+"""
+#第三方登录可以不修改邮箱，直接修改密码后跳到登录页面
+# class ModifyEmail2View(View):
+# 	"""
+# 	第三方登录用户修改邮箱
+# 	"""
+# 	def post(self,request):
+# 		email = request.POST.get('email','')
+# 		response_data = {}
+
+# 		if email == '':
+# 			response_data['status'] = 'fail'
+# 			response_data['msg'] = '邮箱地址不能为空'
+# 			return JsonResponse(response_data)
+
+# 		if UserProfile.objects.filter(email=email).exists():
+# 			response_data['status'] = 'fail'
+# 			response_data['msg'] = '此邮箱已被注册'
+# 			return JsonResponse(response_data)
+
+# 		#发送激活邮件
+# 		return_msg = send_email(email,'register')
+# 		if return_msg == '':
+# 			#用户注册
+# 			user = request.user
+# 			user.is_active = False
+# 			user.save()
+# 			#发送欢迎消息
+# 			message = UserMessage()
+# 			message.user = user.id
+# 			message.message = "欢迎注册慕学在线网,希望您学习愉快。"
+# 			message.has_read = False
+# 			message.save()
+# 			login(request,user)
+# 			response_data['status'] = 'success'
+# 		elif return_msg == '邮箱地址错误':
+# 			response_data['status'] = 'fail'
+# 			response_data['msg'] = '邮箱地址错误'
+# 		elif return_msg == '网络连接失败':
+# 			response_data['status'] = 'fail'
+# 			response_data['msg'] = '网络连接失败'
+# 		else:
+# 			response_data['status'] = 'fail'
+# 			response_data['msg'] = '服务器发生错误'
+
+# 		return JsonResponse(response_data)	
 
 class SendMobileCodeView(LoginRequiredMixin,View):
 	"""

@@ -1,5 +1,5 @@
 from django.urls import path,include
-from .views import LoginView,LogoutView,RegisterView,ActiveUserView,ForgetPasswordView,ResetView,ModifyPasswordView
+from .views import LoginView,LogoutView,RegisterView,ThirdRegisterView,ActiveUserView,ForgetPasswordView,ResetView,ModifyPasswordView
 from .views import UserCenterInfoView,UserAvaterUploadView,UpdatePasswordView,SendVerifyCodeView,ModifyEmailView
 from .views import MyCourseView,MyFavOrgView,MyFavTeacherView,MyFavCourse,MyMessageView,SendMobileCodeView,ModifyMobileView,MyOrderView
 
@@ -20,6 +20,7 @@ urlpatterns = [
 	#个人中心页面发送验证码
 	path('send_verifycode/',SendVerifyCodeView.as_view(),name='send_verifycode'),
 	path('modify_email/',ModifyEmailView.as_view(),name='modify_email'),
+	path('third_register/',ThirdRegisterView.as_view(),name='third_register'),
 	path('mycourses/',MyCourseView.as_view(),name='mycourses'),
 	path('myfav/org/',MyFavOrgView.as_view(),name='myfav_org'),
 	path('myfav/teacher/',MyFavTeacherView.as_view(),name='myfav_teacher'),

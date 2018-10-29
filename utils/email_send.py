@@ -1,7 +1,7 @@
 import random
 import socket
 
-from smtplib import SMTPRecipientsRefused
+from smtplib import SMTPRecipientsRefused,SMTPServerDisconnected
 
 from django.core.mail import send_mail
 
@@ -31,24 +31,25 @@ def send_email(email,send_type):
 	email_record.save()
 
 	if send_type == 'register':
-		email_title = '注册'
+		email_title = '慕学在线网注册'
 		email_body = '请点击下面的链接来激活你的账号: http://localhost:8000/user/active/%s' % code
 	elif send_type == 'forget':
-		email_title = '密码重置'
+		email_title = '慕学在线网密码重置'
 		email_body = '请点击下面的链接来重置你的密码: http://localhost:8000/user/reset/%s' % code
 	elif send_type == 'modify':
-		email_title = '邮箱重置验证码'
+		email_title = '慕学在线网邮箱重置验证码'
 		email_body = '您的验证码为：%s' % code
 
 	try:
 		status = send_mail(email_title,email_body,EMAIL_SENDER,[email,], fail_silently=False)
-		return ''
 	except SMTPRecipientsRefused:
 		return '邮箱地址错误'
 	except socket.gaierror:
 		return '网络连接失败'
+	except SMTPServerDisconnected:
+		return '服务器发送错误'
 	except Exception as e:
-		raise
+		raise e
 
 	return ''
 
