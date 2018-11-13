@@ -96,16 +96,29 @@ class DeleteShoppingCartView(LoginRequiredMixin,View):
 		response_data['msg'] = '删除成功'
 		return JsonResponse(response_data)
 
-class CheckShoppingCartView(LoginRequiredMixin,View):
+class CheckShoppingCartView(View):
 	"""
-	检测用户是否将本课程加入购物车
+	检测用户(用户可能未登录)是否将本课程加入购物车
 	"""
 	def post(self,request):
 		response_data = {}
 		user_id = request.POST.get('user_id','')
 		course_id = request.POST.get('course_id','')
+		unlogin = False
 
 		code = ((1,'课程免费'),(2,'加入购物车但未支付'),(3,'出现错误'),(4,'支付成功'),(5,'加入购物车'))
+
+		#用户未登录
+		if user_id == 'None':
+			unlogin = True
+			response_data['unlogin'] = True
+			if Course.objects.filter(id=int(course_id),is_free=True):
+				response_data['msg'] = code[0][0]
+			else:
+				response_data['msg'] = code[4][0]
+			return JsonResponse(response_data)
+
+		response_data['unlogin'] = False
 
 		if user_id == '' or course_id == '':
 			response_data['status'] = 'fail'

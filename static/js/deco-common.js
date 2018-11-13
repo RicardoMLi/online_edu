@@ -194,31 +194,37 @@ $('#jsSetNewPwdBtn').on('click', function(){
     });
 })
 
-function addShoppingCart(user_id,course_id){
-    var csrftoken = getCookie('csrftoken')
-    if(typeof user_id != 'number')
+function addShoppingCart(user_id,course_id,is_free){
+    if(user_id == null && is_free == 1){
+        alert('请先登录后再操作!');
         return;
-    if(typeof course_id != 'number')
-        return;
-    $.ajax({
-        cache:false,
-        url:"/order/add_shoppingcart/",
-        type:'post',
-        data:{'user_id':user_id,'course_id':course_id},
-        async:true,
-        beforeSend:function(xhr, settings){
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        },
-        success:function(data){
-            if(data.status == 'success'){
-                alert(data.msg);
-                $("#jsBuyCourse").text("去结算");
-            }else{
-                alert(data.msg);
+    }
+    if(user_id != null && is_free == 1){
+        var csrftoken = getCookie('csrftoken')
+        if(typeof user_id != 'number')
+            return;
+        if(typeof course_id != 'number')
+            return;
+        $.ajax({
+            cache:false,
+            url:"/order/add_shoppingcart/",
+            type:'post',
+            data:{'user_id':user_id,'course_id':course_id},
+            async:true,
+            beforeSend:function(xhr, settings){
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            },
+            success:function(data){
+                if(data.status == 'success'){
+                    alert(data.msg);
+                    $("#jsBuyCourse").text("去结算");
+                }else{
+                    alert(data.msg);
+                }
             }
-        }
-
-    });
+        });
+    }
+    
 }
 
 //课程详情页加入购物车或开始学习
@@ -226,8 +232,10 @@ function addShoppingCart(user_id,course_id){
 function study(course_id,user_id){
     var type = $("#jsBuyCourse").text();
     var csrftoken = getCookie('csrftoken');
-    if(typeof user_id != 'number')
+    if(typeof user_id != 'number'){
+        alert('请先登录后再操作');
         return;
+    }
     if(typeof course_id != 'number')
         return;
 

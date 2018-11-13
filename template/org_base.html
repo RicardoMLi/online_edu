@@ -10,6 +10,7 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'css/animate.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'js/plugins/queryCity/css/cityLayout.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
     {% block custom_css %}{% endblock %}
     <script src="{% static 'js/jquery.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'js/jquery-migrate-1.2.1.min.js' %}" type="text/javascript"></script>
@@ -43,6 +44,10 @@
                                 </div>
                             </div>
                         </div>
+                        <a href="{% url 'order_info' request.user.id %}" class="shopping-cart">
+                            <span class="fa fa-shopping-cart fa-2x">&nbsp;</span>
+                            <span id="courses-in-cart">购物车</span>  
+                        </a>
                         <a href="{% url 'messages' %}">
                             <div class="msg-num"> <span id="MsgNum">{{ request.user.get_unreadmessage_num }}</span></div>
                         </a>
@@ -131,7 +136,7 @@
 <script type="text/javascript" src="{% static 'js/plugins/laydate/laydate.js' %}"></script>
 <script src="{% static 'js/plugins/layer/layer.js' %}"></script>
 <script src="{% static 'js/plugins/queryCity/js/public.js' %}" type="text/javascript"></script>
-
+<script src="{% static 'js/deco-common.js' %}" type='text/javascript'></script>
 <script type="text/javascript" src="{% static 'js/plugins/jquery.raty.js' %}"></script>
 <script type="text/javascript">
 //收藏分享

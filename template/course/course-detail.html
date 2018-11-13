@@ -48,7 +48,7 @@
 							<div class="btn colectgroupbtn"  id="jsLeftBtn">
                                   {% if has_fav_course %}已收藏{% else %}收藏{% endif %}
                             </div>
-                                <div class="buy btn"><a id="jsBuyCourse" style="color: white" href="javascript:void(0)" onclick="study({{ course.id }},{{ request.user.id }})"></a></div>
+                                <div class="buy btn"><a id="jsBuyCourse" style="color: white" href="javascript:void(0)" onclick="study({{ course.id }},{{ request.user.id|default_if_none:'null' }})"></a></div>
 						</div>
 					</div>
                     <div class="group-share-box">
@@ -163,16 +163,23 @@ $(document).ready(function(){
                 xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
             },
         success: function(data){
-            if(data.status == 'fail'){
-                $("#jsBuyCourse").text("加入购物车");
-            }else{
+            if(data.unlogin == 'True'){
                 if(data.msg == '1')
                     $("#jsBuyCourse").text("开始学习");
-                else if(data.msg == '4')
-                    $("#jsBuyCourse").text("开始学习");
                 else
-                    $("#jsBuyCourse").text("去结算");
-            }
+                   $("#jsBuyCourse").text("加入购物车");  
+            }else{
+                if(data.status == 'fail'){
+                    $("#jsBuyCourse").text("加入购物车");
+                }else{
+                    if(data.msg == '1')
+                        $("#jsBuyCourse").text("开始学习");
+                    else if(data.msg == '4')
+                        $("#jsBuyCourse").text("开始学习");
+                    else
+                        $("#jsBuyCourse").text("去结算");
+                }
+            }            
         },
 
     })

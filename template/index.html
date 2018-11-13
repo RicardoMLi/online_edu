@@ -99,7 +99,7 @@
                                 </div>
                                 <div class="bottom">
                                     <span class="fl" title="{{ course.course_org.name }}">{{ course.course_org.name }}</span>
-                                    <span class="star fr" onclick="addShoppingCart({{ request.user.id }},{{ course.id }})">{% if course.is_free %}{% else %}加入购物车{% endif %}</span>
+                                    <span class="star fr" onclick="addShoppingCart({{ request.user.id|default_if_none:'null' }},{{ course.id }},{{ course.is_free|yesno:'0,1,-1' }})">{% if course.is_free %}<a href="{% url 'course_detail' course.id %}">去学习</a>{% else %}加入购物车{% endif %}</span>
                                 </div>
                             </div>
                             {% endfor %}

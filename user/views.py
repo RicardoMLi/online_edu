@@ -72,7 +72,8 @@ class ActiveUserView(View):
 				#删除注册账号时发生的验证码记录
 				for record in EmailVerifyRecord.objects.filter(email=email,send_type='register'):
 					record.delete()
-			return render(request,'index.html',context={})
+				login(request,user,backend='user.views.CustomBackend')
+			return redirect('index')
 		else:
 			return render(request,'user/active_fail.html',context={})
 
