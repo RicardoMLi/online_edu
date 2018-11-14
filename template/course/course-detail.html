@@ -132,12 +132,12 @@
                     {% for relate_course in related_courses %}
                         <dl>
                             <dt>
-                                <a target="_blank" href="">
+                                <a target="_blank" href="{% url 'course_detail' relate_course.id %}">
                                     <img width="240" height="220" class="scrollLoading" src="/media/{{ relate_course.image }}"/>
                                 </a>
                             </dt>
                             <dd>
-                                <a target="_blank" href=""><h2> {% if relate_course.name|length > 20 %}{{ relate_course.name|truncatechars:20 }}...{% else %} {{ relate_course.name }} {% endif %}</h2></a>
+                                <a target="_blank" href="{% url 'course_detail' relate_course.id %}"><h2> {% if relate_course.name|length > 20 %}{{ relate_course.name|truncatechars:20 }}...{% else %} {{ relate_course.name }} {% endif %}</h2></a>
                                 <span class="fl">学习时长：<i class="key">{{ relate_course.study_duration }}</i></span>
                             </dd>
                         </dl>
@@ -163,7 +163,7 @@ $(document).ready(function(){
                 xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
             },
         success: function(data){
-            if(data.unlogin == 'True'){
+            if(data.unlogin == true){
                 if(data.msg == '1')
                     $("#jsBuyCourse").text("开始学习");
                 else
