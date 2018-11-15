@@ -100,22 +100,22 @@
                     <div class="box mb40">
                         <h4>讲师提示</h4>
                         <div class="teacher-info">
-                            <a href="#" target="_blank">
+                            <a href="{% url 'teacher_detail' course.teacher.id %}" target="_blank">
                                 <img src='/media/{{ course.teacher.avater }}' width='80' height='80' />
                             </a>
                         <span class="tit">
-                          <a href=#" target="_blank">{{ course.teacher.name }}</a>
+                          <a href="{% url 'teacher_detail' course.teacher.id %}" target="_blank">{{ course.teacher.name }}</a>
                         </span>
                         <span class="job">{{ course.teacher.work_position }}</span>
                         </div>
                         <div class="course-info-tip">
                             <dl class="first">
                                 <dt>课程须知</dt>
-                                <dd class="autowrap">{{ course.you_need_know }}</dd>
+                                <dd class="autowrap">{{ course.you_need_know|default_if_none:'无' }}</dd>
                             </dl>
                             <dl>
                                 <dt>老师告诉你能学到什么？</dt>
-                                <dd class="autowrap">{{ course.you_can_get }}</dd>
+                                <dd class="autowrap">{{ course.you_can_get|default_if_none:'无' }}</dd>
                             </dl>
                         </div>
                     </div>

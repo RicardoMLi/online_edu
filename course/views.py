@@ -136,8 +136,14 @@ class CourseCommentView(LoginRequiredMixin,View):
 		all_comments = CourseComment.objects.filter(course=course).order_by('-created_time')
 		#查找所有课程资料
 		course_resources = CourseResource.objects.filter(course=course)
+		#查找学习过本课程的同学还学习了其他什么课程
+		user_ids = [user_course.user.id for user_course in UserCourse.objects.filter(course=course)]
+		related_courses = [user_course.course for user_course in UserCourse.objects.filter(user_id__in=user_ids)]
+		#根据课程名去重
+		related_courses = list(set(related_courses))[:3]
 		context['course'] = course
 		context['all_comments'] = all_comments
+		context['related_courses'] = related_courses
 		context['course_resources'] = course_resources
 
 		return render(request,'course/course-comment.html',context)

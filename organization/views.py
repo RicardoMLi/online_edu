@@ -122,11 +122,20 @@ class OrganizationCourseView(View):
 				has_fav = True
 
 		all_courses = course_org.course_set.all()
+		#分页
+		try:
+			page = request.GET.get('page',1)
+		except PageNotAnInteger:
+			page = 1
+
+		p = Paginator(all_courses,4,request=request)
+
+		courses = p.page(page)
 
 		context['current_page'] = 'course'
 		context['has_fav'] = has_fav
 		context['course_org'] = course_org
-		context['all_courses'] = all_courses
+		context['all_courses'] = courses
 
 		return render(request,'organization/org-detail-course.html',context)
 

@@ -154,7 +154,7 @@ function add_fav(current_elem, fav_id, fav_type){
             if(data.status == 'fail'){
                 if(data.msg == '用户未登录'){
                     alert(data.msg);
-                    window.location.href="/login/";
+                    window.location.href="/user/login/";
                 }else{
                     alert(data.msg)
                 }
