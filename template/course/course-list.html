@@ -51,7 +51,7 @@
                                 <div class="bottom">
                                     <a href="{% url 'org_home' course.course_org.id %}"><span class="fl">{{ course.course_org.name }}</span></a>
                                     <span class="star fr  notlogin" data-favid="15" onclick="addShoppingCart({{ request.user.id|default_if_none:'null' }},{{ course.id }},{{ course.is_free|yesno:'0,1,-1' }})">
-                                       {% if course.is_free %}<a href="{% url 'course_detail' course.id %}">去学习</a>{% else %}加入购物车{% endif %}
+                                       {% if course.is_free %}<a href="{% url 'course_detail' course.id %}" style="color: #9f9f9f">去学习</a>{% else %}加入购物车{% endif %}
                                     </span>
                                 </div>
                             </div>
@@ -100,7 +100,7 @@
 						<dd>
 							<a target="_blank" href="{% url 'course_detail' hot_course.id %}"><h2> {{ hot_course.name }}</h2></a>
 							<span class="fl">难度：<i class="key">{{ hot_course.get_degree_display }}</i></span>
-                            <span class="fr fa fa-star fa-lg" onclick="addShoppingCart({{ request.user.id|default_if_none:'null' }},{{ hot_course.id }},{{ hot_course.is_free|yesno:'0,1,-1' }})">{% if hot_course.is_free %}<a href="{% url 'course_detail' hot_course.id %}">去学习</a>{% else %}加入购物车{% endif %}</span>
+                            <span class="fr fa fa-star fa-lg" onclick="addShoppingCart({{ request.user.id|default_if_none:'null' }},{{ hot_course.id }},{{ hot_course.is_free|yesno:'0,1,-1' }})">{% if hot_course.is_free %}<a href="{% url 'course_detail' hot_course.id %}" style="color: #9f9f9f">去学习</a>{% else %}加入购物车{% endif %}</span>
 						</dd>
 					</dl>
                     {% endfor %}

@@ -107,7 +107,7 @@
                         <div class="head">讲师排行榜</div>
                         {% for hot_teacher in hot_teachers %}
                         <dl class="des">
-                            <span class="num fl">1</span>
+                            <span class="num fl">{{ forloop.counter }}</span>
                             <a href="{% url 'teacher_detail' hot_teacher.id %}">
                                 <dt>
                                     <img width="50" height="50" class="scrollLoading" src="/media/{{ hot_teacher.avater }}"/>

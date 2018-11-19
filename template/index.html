@@ -98,8 +98,8 @@
                                     <span class="fr">学习人数：{{ course.students_num }}</span>
                                 </div>
                                 <div class="bottom">
-                                    <span class="fl" title="{{ course.course_org.name }}">{{ course.course_org.name }}</span>
-                                    <span class="star fr" onclick="addShoppingCart({{ request.user.id|default_if_none:'null' }},{{ course.id }},{{ course.is_free|yesno:'0,1,-1' }})">{% if course.is_free %}<a href="{% url 'course_detail' course.id %}">去学习</a>{% else %}加入购物车{% endif %}</span>
+                                    <span class="fl" title="{{ course.course_org.name }}"><a href="{% url 'org_home' course.course_org.id %}" style="color: #9f9f9f">{{ course.course_org.name }}</a></span>
+                                    <span class="star fr" onclick="addShoppingCart({{ request.user.id|default_if_none:'null' }},{{ course.id }},{{ course.is_free|yesno:'0,1,-1' }})">{% if course.is_free %}<a href="{% url 'course_detail' course.id %}" style="color: #9f9f9f">去学习</a>{% else %}加入购物车{% endif %}</span>
                                 </div>
                             </div>
                             {% endfor %}

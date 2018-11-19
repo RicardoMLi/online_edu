@@ -64,9 +64,9 @@
                         <li><a id="commentOn" class="" href="{% url 'course_comment' course.id %}"><span>评论</span></a></li>
                     </ul>
                 </div>
-                <div id="notice" class="clearfix">
+<!--                 <div id="notice" class="clearfix">
                     <div class="l"> <strong>课程公告:</strong> <a  href="javascript:void(0)">Python的文档以及相关的课件已上传</a> </div>
-                </div>
+                </div> -->
 
                 <div class="mod-chapters">
                     {% for chapter in course.get_all_chapters %}
@@ -99,9 +99,12 @@
                                 <span ><i class="aui-iconfont aui-icon-file"></i>&nbsp;&nbsp;{{ course_resource.name }}</span>
                                 <a href="/media/{{ course_resource.download_path }}" class="downcode" target="_blank" download="" data-id="274" title="">下载</a>
                             </li>
+                            {% empty %}
+                            <h3>暂无资料</h3>
                             {% endfor %}
                         </ul>
                     </div>
+                    {% if course.teacher %}
                     <div class="box mb40">
                         <h4>讲师提示</h4>
                         <div class="teacher-info">
@@ -116,15 +119,15 @@
                         <div class="course-info-tip">
                             <dl class="first">
                                 <dt>课程须知</dt>
-                                <dd class="autowrap">{{ course.you_need_know|default_if_none:'' }}</dd>
+                                <dd class="autowrap">{{ course.you_need_know|default_if_none:'无' }}</dd>
                             </dl>
                             <dl>
                                 <dt>老师告诉你能学到什么？</dt>
-                                <dd class="autowrap">{{ course.you_can_get|default_if_none:'' }}</dd>
+                                <dd class="autowrap">{{ course.you_can_get|default_if_none:'无' }}</dd>
                             </dl>
                         </div>
                     </div>
-
+                    {% endif %}
 
                     <div class="cp-other-learned  js-comp-tabs">
                         <div class="cp-header clearfix">

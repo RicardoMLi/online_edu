@@ -80,7 +80,7 @@
                             </li>
                         </ul>
                     </dd>
-                    <div class="buy start_groupbuy jsShowPerfect2" data-id="22"><a href="{% url 'org_home' course_org.id %}"><br/>查看<br/>详情</a></div>
+                    <div class="buy start_groupbuy jsShowPerfect2" data-id="22"><a href="{% url 'org_home' course_org.id %}" style="color: black"><br/>查看<br/>详情</a></div>
                 </dl>
             {% endfor %}
 		</div>
@@ -129,7 +129,7 @@
                     <input type="text" name="course_name" id="companyAddress" placeholder="课程名" maxlength="50" />
                 </div>
                 <p class="error company-tips" id="jsCompanyTips"></p>
-				<input class="btn" type="text" id="jsStayBtn" value="立即咨询 >" />
+				<input class="btn" type="text" id="jsStayBtn" value="立即咨询" />
             {% csrf_token %}
             </form>
 		</div>
@@ -140,7 +140,7 @@
                 <dl class="des">
                     <dt class="num fl">{{ forloop.counter }}</dt>
                     <dd>
-                        <a href="#"><h1>{{ curent_org.name }}</h1></a>
+                        <a href="{% url 'org_home' curent_org.id %}"><h1>{{ curent_org.name }}</h1></a>
                         <p>{{ curent_org.address }}</p>
                     </dd>
                 </dl>
