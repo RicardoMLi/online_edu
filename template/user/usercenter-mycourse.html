@@ -35,7 +35,7 @@
                                 <span class="fr">学习人数：{{ user_course.course.students_num }}</span>
                             </div>
                             <div class="bottom">
-                                <span class="fl"><a href="{% url 'org_home' user_course.course.course_org.id %}">{{ user_course.course.course_org.name }}</a></span>
+                                <span class="fl"><a href="{% url 'org_home' user_course.course.course_org.id %}" style="color: #9f9f9f">{{ user_course.course.course_org.name }}</a></span>
                                 <span class="star fr  notlogin" data-favid="15">{{ user_course.course.fav_num }}</span>
                             </div>
                         </div>

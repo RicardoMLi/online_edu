@@ -39,7 +39,7 @@
                             <td>{{ order.created_time }}</td>
                             <td>{{ order.order_amount }}</td>
                             <td>{% if order.pay_status == 'TRADE_SUCCESS' %}已支付{% elif order.pay_status == 'unpaid' %}未支付{% endif %}</td>
-                            <td>{% if order.pay_status == 'unpaid' %}<a href="{% url 'order_info' request.user.id %}">去支付</a>{% elif order.pay_status == 'TRADE_SUCCESS' %}<a href="{% url 'order_detail' order.order_code %}">查看订单<a>{% endif %}</td>
+                            <td>{% if order.pay_status == 'unpaid' %}<a href="{% url 'order_info' request.user.id %}" style="color: #9f9f9f">去支付</a>{% elif order.pay_status == 'TRADE_SUCCESS' %}<a href="{% url 'order_detail' order.order_code %}" style="color: #9f9f9f">查看订单<a>{% endif %}</td>
                         </tr>
                         {% empty %}
                         {% endfor %}

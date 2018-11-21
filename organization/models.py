@@ -44,6 +44,13 @@ class CourseOrganization(models.Model):
 	def get_teacher_nums(self):
 		return self.teacher_set.all().count()
 
+	#获取机构学习人数
+	def get_student_nums(self):
+		total = 0
+		for course in self.course_set.all():
+			total += course.students_num
+		return total
+
 	class Meta:
 		verbose_name = '授课机构信息'
 		verbose_name_plural = verbose_name
